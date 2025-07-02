@@ -53,7 +53,7 @@
     iframe[src*="cusdis.com"] {
       width: 100% !important;
       min-height: 500px !important;
-      border: 2px solid #cceee0;
+      border: 2px solid #b3d9cc;
       border-radius: 12px;
     }
   </style>
@@ -74,5 +74,33 @@
   </div>
 
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+  <script>
+    // After Cusdis loads, inject custom border styles into iframe
+    window.addEventListener("message", function (event) {
+      if (event.data && event.data.type === "cusdis-loaded") {
+        const iframe = document.querySelector('iframe[src*="cusdis.com"]');
+        if (iframe && iframe.contentWindow) {
+          const css = `
+            input, textarea {
+              border: 1.5px solid #33997d !important;
+              border-radius: 8px !important;
+              padding: 10px !important;
+            }
+            input:focus, textarea:focus {
+              border-color: #227c62 !important;
+              outline: none !important;
+              box-shadow: 0 0 0 2px rgba(34, 124, 98, 0.2) !important;
+            }
+          `;
+          iframe.contentWindow.postMessage({
+            type: 'cusdis-set-theme',
+            payload: {
+              customCss: css
+            }
+          }, '*');
+        }
+      }
+    });
+  </script>
 </body>
 </html>
