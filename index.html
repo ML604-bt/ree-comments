@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REE Comments</title>
+  <title>REE Comment Box</title>
   <style>
     body {
       margin: 0;
@@ -22,6 +22,7 @@
       font-size: 1.6rem;
       color: #1c7f5f;
       margin-bottom: 0.5rem;
+      text-align: center;
     }
 
     form {
@@ -74,6 +75,7 @@
       font-weight: 500;
       border-radius: 8px;
       text-align: center;
+      max-width: 500px;
     }
   </style>
 </head>
@@ -95,7 +97,7 @@
     <button type="submit">Submit Comment</button>
   </form>
 
-  <div id="thankYouMessage">💚 Thank you for your comment; it meant a lot.</div>
+  <div id="thankYouMessage">💚 Thank you for your comment. It means a lot to us!</div>
 
   <script>
     const form = document.getElementById('commentForm');
@@ -105,7 +107,7 @@
       event.preventDefault();
       form.style.display = 'none';
       thankYou.style.display = 'block';
-      // Here you could optionally send the data to a backend or storage API.
+      // For real storage, you'd add fetch() or send this to a database/API
     });
   </script>
 
