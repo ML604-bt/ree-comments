@@ -2,27 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>REE Hydration Comments</title>
+  <title>REE Comments</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: radial-gradient(circle at 50% 30%, #e1f7ec, #d1f2e5, #f3fef5);
-      background-size: 200% 200%;
-      animation: ripple 18s ease-in-out infinite;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f3fef5;
       color: #0c3b2e;
-    }
-
-    @keyframes ripple {
-      0%, 100% { background-position: 50% 50%; }
-      50% { background-position: 48% 52%; }
     }
 
     .wrapper {
       max-width: 720px;
-      margin: 30px auto;
+      margin: 40px auto;
       padding: 0 16px;
       text-align: center;
     }
@@ -30,7 +23,7 @@
     h1 {
       font-size: 1.8rem;
       color: #1c7f5f;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
     }
 
     p {
@@ -40,83 +33,32 @@
     }
 
     #cusdis_thread {
-      margin: 0 auto;
-      min-height: 400px;
+      text-align: left;
     }
 
     iframe[src*="cusdis.com"] {
       width: 100% !important;
-      min-height: 500px !important;
-      border: 2px dashed #2ea67d;
-      border-radius: 12px;
-    }
-
-    #thank-you-popup {
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #e0f8ec;
-      border: 1px solid #b2e0cf;
-      color: #1c7f5f;
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      z-index: 999;
-      display: none;
-      animation: fadeSlide 0.4s ease-out;
-    }
-
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translate(-50%, -10%); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+      min-height: 600px !important;
+      border: 1px solid #cceee0;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <h1>💬 Share Your REE Experience</h1>
-    <p>What does REE feel like to you? The taste, the difference, the effect — your hydration story matters.</p>
+    <p>Let us know what REE tastes and feels like to you.</p>
 
     <div id="cusdis_thread"
       data-host="https://cusdis.com"
       data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
-      data-page-id="ree-hydration-comments"
+      data-page-id="ree-comments"
       data-page-url="https://ml604-bt.github.io/ree-comments/"
-      data-page-title="REE Hydration Comments"
+      data-page-title="REE Comments"
       data-theme="light">
     </div>
   </div>
 
-  <!-- Soft Thank You Popup -->
-  <div id="thank-you-popup">🙏 Thank you! Your REE hydration story has been sent for approval.</div>
-
-  <!-- Cusdis Script -->
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-
-  <!-- Custom Confetti + Message -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script>
-    window.CUSDIS_LOADED = function () {
-      window.addEventListener('message', function (event) {
-        if (event.data?.type === 'cusdis-comment-submitted') {
-          const popup = document.getElementById('thank-you-popup');
-          popup.style.display = 'block';
-
-          confetti({
-            particleCount: 80,
-            spread: 60,
-            origin: { y: 0.4 },
-          });
-
-          setTimeout(() => {
-            popup.style.display = 'none';
-          }, 5000);
-        }
-      });
-    };
-  </script>
 </body>
 </html>
