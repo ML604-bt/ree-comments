@@ -16,12 +16,8 @@
     }
 
     @keyframes ripple {
-      0%, 100% {
-        background-position: 50% 50%;
-      }
-      50% {
-        background-position: 48% 52%;
-      }
+      0%, 100% { background-position: 50% 50%; }
+      50% { background-position: 48% 52%; }
     }
 
     .wrapper {
@@ -44,17 +40,38 @@
     }
 
     #cusdis_thread {
-      max-width: 100%;
       margin: 0 auto;
-      text-align: left;
       min-height: 400px;
     }
 
     iframe[src*="cusdis.com"] {
       width: 100% !important;
       min-height: 500px !important;
-      border: 2px solid #b3d9cc;
+      border: 2px dashed #2ea67d;
       border-radius: 12px;
+    }
+
+    #thank-you-popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e0f8ec;
+      border: 1px solid #b2e0cf;
+      color: #1c7f5f;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      display: none;
+      animation: fadeSlide 0.4s ease-out;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translate(-50%, -10%); }
+      to { opacity: 1; transform: translate(-50%, 0); }
     }
   </style>
 </head>
@@ -73,34 +90,33 @@
     </div>
   </div>
 
+  <!-- Soft Thank You Popup -->
+  <div id="thank-you-popup">🙏 Thank you! Your REE hydration story has been sent for approval.</div>
+
+  <!-- Cusdis Script -->
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+
+  <!-- Custom Confetti + Message -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
-    // After Cusdis loads, inject custom border styles into iframe
-    window.addEventListener("message", function (event) {
-      if (event.data && event.data.type === "cusdis-loaded") {
-        const iframe = document.querySelector('iframe[src*="cusdis.com"]');
-        if (iframe && iframe.contentWindow) {
-          const css = `
-            input, textarea {
-              border: 1.5px solid #33997d !important;
-              border-radius: 8px !important;
-              padding: 10px !important;
-            }
-            input:focus, textarea:focus {
-              border-color: #227c62 !important;
-              outline: none !important;
-              box-shadow: 0 0 0 2px rgba(34, 124, 98, 0.2) !important;
-            }
-          `;
-          iframe.contentWindow.postMessage({
-            type: 'cusdis-set-theme',
-            payload: {
-              customCss: css
-            }
-          }, '*');
+    window.CUSDIS_LOADED = function () {
+      window.addEventListener('message', function (event) {
+        if (event.data?.type === 'cusdis-comment-submitted') {
+          const popup = document.getElementById('thank-you-popup');
+          popup.style.display = 'block';
+
+          confetti({
+            particleCount: 80,
+            spread: 60,
+            origin: { y: 0.4 },
+          });
+
+          setTimeout(() => {
+            popup.style.display = 'none';
+          }, 5000);
         }
-      }
-    });
+      });
+    };
   </script>
 </body>
 </html>
