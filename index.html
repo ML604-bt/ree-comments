@@ -47,23 +47,14 @@
       max-width: 100%;
       margin: 0 auto;
       text-align: left;
+      min-height: 400px;
     }
 
-    #thank-you-message {
-      display: none;
-      color: #227c62;
-      font-size: 1rem;
-      font-weight: 500;
-      margin-top: 1.5rem;
-      background-color: #e0f8ec;
-      padding: 10px 20px;
-      border-radius: 12px;
-    }
-
-    /* ✅ Optional visual cue for iframe border */
     iframe[src*="cusdis.com"] {
+      width: 100% !important;
+      min-height: 500px !important;
       border: 2px solid #cceee0;
-      border-radius: 8px;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -77,41 +68,11 @@
       data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
       data-page-id="ree-hydration-comments"
       data-page-url="https://ml604-bt.github.io/ree-comments/"
-      data-page-title="REE Hydration Comments">
+      data-page-title="REE Hydration Comments"
+      data-theme="light">
     </div>
-
-    <div id="thank-you-message">🙏 Thank you for sharing your REE hydration story!</div>
   </div>
 
-  <!-- Cusdis Script -->
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-
-  <!-- Confetti Script -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-  <script>
-    window.CUSDIS_LOADED = function () {
-      window.addEventListener('message', function (event) {
-        if (event.data?.type === 'cusdis-comment-submitted') {
-          const thankYou = document.getElementById('thank-you-message');
-          if (thankYou) {
-            thankYou.style.display = 'block';
-
-            // Confetti pop
-            confetti({
-              particleCount: 100,
-              spread: 70,
-              origin: { y: 0.6 },
-            });
-
-            // Hide after 5 sec
-            setTimeout(() => {
-              thankYou.style.display = 'none';
-            }, 5000);
-          }
-        }
-      });
-    };
-  </script>
 </body>
 </html>
