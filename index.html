@@ -31,25 +31,19 @@
   .comment-container {
     max-width: 500px;
     width: 100%;
-    max-height: 400px;            /* compact height */
-    overflow-y: auto;             /* scroll inside */
-    border: 2.5px solid #1c7f5f;  /* thicker border */
+    max-height: 600px; /* height to fit inside iframe */
+    overflow-y: auto;
+    border: 2px solid #1c7f5f;
     border-radius: 16px;
     padding: 16px;
     box-shadow: 0 6px 15px rgba(28, 127, 95, 0.35);
-    background-color: #e6f4ec;    /* subtle light green bg */
+    background-color: #e6f4ec;
     margin-bottom: 40px;
   }
   iframe[src*="cusdis.com"] {
     width: 100% !important;
-    height: 400px !important;     /* match container height */
+    height: 580px !important; /* slightly less than container height */
     border: none !important;
-  }
-  /* Optional text styling inside iframe wrapper */
-  #cusdis_thread, body {
-    font-weight: 600;
-    font-size: 1rem;
-    color: #0c3b2e;
   }
 </style>
 </head>
