@@ -58,7 +58,12 @@
       background-color: #e0f8ec;
       padding: 10px 20px;
       border-radius: 12px;
-      transition: opacity 0.3s ease;
+    }
+
+    /* ✅ Optional visual cue for iframe border */
+    iframe[src*="cusdis.com"] {
+      border: 2px solid #cceee0;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -78,13 +83,12 @@
     <div id="thank-you-message">🙏 Thank you for sharing your REE hydration story!</div>
   </div>
 
-  <!-- Cusdis Embed -->
+  <!-- Cusdis Script -->
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
 
-  <!-- Confetti -->
+  <!-- Confetti Script -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Trigger Confetti + Thank You on Comment Submit -->
   <script>
     window.CUSDIS_LOADED = function () {
       window.addEventListener('message', function (event) {
@@ -93,14 +97,14 @@
           if (thankYou) {
             thankYou.style.display = 'block';
 
-            // Fire confetti 🎉
+            // Confetti pop
             confetti({
               particleCount: 100,
               spread: 70,
               origin: { y: 0.6 },
             });
 
-            // Optional: auto-hide thank-you after 5 seconds
+            // Hide after 5 sec
             setTimeout(() => {
               thankYou.style.display = 'none';
             }, 5000);
