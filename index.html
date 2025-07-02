@@ -9,22 +9,44 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f9f9f9;
+      background: #f3fef5;
+      color: #0c3b2e;
+    }
+    .wrapper {
+      max-width: 720px;
+      margin: 30px auto;
+      padding: 0 16px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #1c7f5f;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1rem;
+      color: #4a6c59;
+      margin-bottom: 2rem;
     }
     #cusdis_thread {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 0 12px;
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: left;
     }
   </style>
 </head>
 <body>
-  <div id="cusdis_thread"
-    data-host="https://cusdis.com"
-    data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
-    data-page-id="ree-hydration-comments"
-    data-page-url="https://ml604-bt.github.io/ree-comments"
-    data-page-title="REE Hydration Comments">
+  <div class="wrapper">
+    <h1>💬 Share Your REE Experience</h1>
+    <p>What does REE feel like to you? The taste, the difference, the effect — your hydration story matters.</p>
+
+    <div id="cusdis_thread"
+      data-host="https://cusdis.com"
+      data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
+      data-page-id="ree-hydration-comments"
+      data-page-url="https://ml604-bt.github.io/ree-comments/"
+      data-page-title="REE Hydration Comments">
+    </div>
   </div>
 
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
