@@ -16,12 +16,8 @@
     }
 
     @keyframes ripple {
-      0%, 100% {
-        background-position: 50% 50%;
-      }
-      50% {
-        background-position: 48% 52%;
-      }
+      0%, 100% { background-position: 50% 50%; }
+      50% { background-position: 48% 52%; }
     }
 
     .wrapper {
@@ -44,21 +40,38 @@
     }
 
     #cusdis_thread {
-      max-width: 100%;
       margin: 0 auto;
-      text-align: left;
+      min-height: 400px;
     }
 
-    #thank-you-message {
-      display: none;
-      color: #227c62;
-      font-size: 1rem;
-      font-weight: 500;
-      margin-top: 1.5rem;
-      background-color: #e0f8ec;
-      padding: 10px 20px;
+    iframe[src*="cusdis.com"] {
+      width: 100% !important;
+      min-height: 500px !important;
+      border: 2px dashed #2ea67d;
       border-radius: 12px;
-      transition: opacity 0.3s ease;
+    }
+
+    #thank-you-popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e0f8ec;
+      border: 1px solid #b2e0cf;
+      color: #1c7f5f;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      display: none;
+      animation: fadeSlide 0.4s ease-out;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translate(-50%, -10%); }
+      to { opacity: 1; transform: translate(-50%, 0); }
     }
   </style>
 </head>
@@ -72,39 +85,35 @@
       data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
       data-page-id="ree-hydration-comments"
       data-page-url="https://ml604-bt.github.io/ree-comments/"
-      data-page-title="REE Hydration Comments">
+      data-page-title="REE Hydration Comments"
+      data-theme="light">
     </div>
-
-    <div id="thank-you-message">🙏 Thank you for sharing your REE hydration story!</div>
   </div>
 
-  <!-- Cusdis Embed -->
+  <!-- Soft Thank You Popup -->
+  <div id="thank-you-popup">🙏 Thank you! Your REE hydration story has been sent for approval.</div>
+
+  <!-- Cusdis Script -->
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
 
-  <!-- Confetti -->
+  <!-- Custom Confetti + Message -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-  <!-- Trigger Confetti + Thank You on Comment Submit -->
   <script>
     window.CUSDIS_LOADED = function () {
       window.addEventListener('message', function (event) {
         if (event.data?.type === 'cusdis-comment-submitted') {
-          const thankYou = document.getElementById('thank-you-message');
-          if (thankYou) {
-            thankYou.style.display = 'block';
+          const popup = document.getElementById('thank-you-popup');
+          popup.style.display = 'block';
 
-            // Fire confetti 🎉
-            confetti({
-              particleCount: 100,
-              spread: 70,
-              origin: { y: 0.6 },
-            });
+          confetti({
+            particleCount: 80,
+            spread: 60,
+            origin: { y: 0.4 },
+          });
 
-            // Optional: auto-hide thank-you after 5 seconds
-            setTimeout(() => {
-              thankYou.style.display = 'none';
-            }, 5000);
-          }
+          setTimeout(() => {
+            popup.style.display = 'none';
+          }, 5000);
         }
       });
     };
