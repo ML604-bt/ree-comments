@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>REE Hydration Comments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff;
+    }
+    #cusdis_thread {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="cusdis_thread"
+    data-host="https://cusdis.com"
+    data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
+    data-page-id="ree-hydration-comments"
+    data-page-url="https://yourdomain.com/ree-comments"
+    data-page-title="REE Hydration Comments">
+  </div>
+
+  <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+</body>
+</html>
