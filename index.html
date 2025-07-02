@@ -1,93 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>REE Hydration Comments</title>
-<style>
-  body {
-    margin: 0; padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f3fef5;
-    color: #0c3b2e;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  h1 {
-    margin: 40px 16px 16px;
-    font-size: 1.6rem;
-    color: #1c7f5f;
-    text-align: center;
-  }
-  p {
-    margin: 0 16px 24px;
-    font-size: 1rem;
-    color: #4a6c59;
-    text-align: center;
-    max-width: 500px;
-  }
-  #toggleBtn {
-    background-color: #1c7f5f;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-bottom: 16px;
-    transition: background-color 0.3s ease;
-  }
-  #toggleBtn:hover {
-    background-color: #16664b;
-  }
-  .comment-container {
-    max-width: 500px;
-    width: 100%;
-    border: 1px solid #cceee0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgb(28 127 95 / 0.25);
-    display: none; /* hidden by default */
-  }
-  iframe[src*="cusdis.com"] {
-    width: 100% !important;
-    height: 600px !important;
-    border: none !important;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Simple Comment Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3fef5;
+      color: #0c3b2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .comment-box {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      margin-top: 0;
+      color: #1c7f5f;
+      font-weight: 600;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1.5px solid #33997d;
+      border-radius: 8px;
+      resize: vertical;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: #227c62;
+      box-shadow: 0 0 5px rgba(34,124,98,0.3);
+    }
+    button {
+      margin-top: 20px;
+      background-color: #1c7f5f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #16664b;
+    }
+    .thank-you {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #1c7f5f;
+      display: none;
+    }
+  </style>
 </head>
 <body>
+  <form class="comment-box" id="commentForm">
+    <h2>Share Your REE Experience</h2>
 
-<h1>💬 Share Your REE Experience</h1>
-<p>Let us know what REE tastes and feels like to you. Click below to open the comments.</p>
+    <label for="comment">Your Comment*</label>
+    <textarea id="comment" name="comment" rows="4" required placeholder="Write your comment here..."></textarea>
 
-<button id="toggleBtn" aria-expanded="false" aria-controls="commentBox">Show Comments</button>
+    <label for="name">Your Name (optional)</label>
+    <input type="text" id="name" name="name" placeholder="Your name" />
 
-<div class="comment-container" id="commentBox">
-  <div id="cusdis_thread"
-    data-host="https://cusdis.com"
-    data-app-id="1f9b1626-9fe2-476b-aa0f-3006b73810ce"
-    data-page-id="ree-comments"
-    data-page-url="https://ml604-bt.github.io/ree-comments/"
-    data-page-title="REE Comments"
-    data-theme="light">
-  </div>
-</div>
+    <button type="submit">Submit Comment</button>
+    <div class="thank-you" id="thankYouMsg">🙏 Thank you! Your comment has been received.</div>
+  </form>
 
-<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-<script>
-  const toggleBtn = document.getElementById('toggleBtn');
-  const commentBox = document.getElementById('commentBox');
+  <script>
+    const form = document.getElementById('commentForm');
+    const thankYou = document.getElementById('thankYouMsg');
 
-  toggleBtn.addEventListener('click', () => {
-    const isVisible = commentBox.style.display === 'block';
-    commentBox.style.display = isVisible ? 'none' : 'block';
-    toggleBtn.textContent = isVisible ? 'Show Comments' : 'Hide Comments';
-    toggleBtn.setAttribute('aria-expanded', !isVisible);
-  });
-</script>
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
 
+      // Simple validation passed (required attribute handles it)
+      // Here, you could add backend submission logic
+
+      // Show thank you message
+      thankYou.style.display = 'block';
+
+      // Reset form fields
+      form.reset();
+
+      // Hide thank you message after 4 seconds
+      setTimeout(() => {
+        thankYou.style.display = 'none';
+      }, 4000);
+    });
+  </script>
 </body>
 </html>
