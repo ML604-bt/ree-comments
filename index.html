@@ -9,7 +9,6 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f3fef5;
       background: radial-gradient(circle at 50% 30%, #e1f7ec, #d1f2e5, #f3fef5);
       background-size: 200% 200%;
       animation: ripple 18s ease-in-out infinite;
@@ -59,6 +58,7 @@
       background-color: #e0f8ec;
       padding: 10px 20px;
       border-radius: 12px;
+      transition: opacity 0.3s ease;
     }
   </style>
 </head>
@@ -78,31 +78,36 @@
     <div id="thank-you-message">🙏 Thank you for sharing your REE hydration story!</div>
   </div>
 
+  <!-- Cusdis Embed -->
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Trigger Confetti + Thank You on Comment Submit -->
   <script>
-    // Detect new comment submission and show thank-you
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'childList') {
+    window.CUSDIS_LOADED = function () {
+      window.addEventListener('message', function (event) {
+        if (event.data?.type === 'cusdis-comment-submitted') {
           const thankYou = document.getElementById('thank-you-message');
           if (thankYou) {
             thankYou.style.display = 'block';
+
+            // Fire confetti 🎉
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+            });
+
+            // Optional: auto-hide thank-you after 5 seconds
+            setTimeout(() => {
+              thankYou.style.display = 'none';
+            }, 5000);
           }
         }
-      }
-    });
-
-    const waitForCusdis = () => {
-      const iframe = document.querySelector('iframe[src*="cusdis.com"]');
-      if (iframe) {
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        observer.observe(iframeDoc.body, { childList: true, subtree: true });
-      } else {
-        setTimeout(waitForCusdis, 1000);
-      }
+      });
     };
-
-    window.addEventListener('DOMContentLoaded', waitForCusdis);
   </script>
 </body>
 </html>
