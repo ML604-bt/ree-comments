@@ -10,28 +10,55 @@
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f3fef5;
+      background: radial-gradient(circle at 50% 30%, #e1f7ec, #d1f2e5, #f3fef5);
+      background-size: 200% 200%;
+      animation: ripple 18s ease-in-out infinite;
       color: #0c3b2e;
     }
+
+    @keyframes ripple {
+      0%, 100% {
+        background-position: 50% 50%;
+      }
+      50% {
+        background-position: 48% 52%;
+      }
+    }
+
     .wrapper {
       max-width: 720px;
       margin: 30px auto;
       padding: 0 16px;
       text-align: center;
     }
+
     h1 {
       font-size: 1.8rem;
       color: #1c7f5f;
       margin-bottom: 0.5rem;
     }
+
     p {
       font-size: 1rem;
       color: #4a6c59;
       margin-bottom: 2rem;
     }
+
     #cusdis_thread {
       max-width: 100%;
       margin: 0 auto;
       text-align: left;
+    }
+
+    #thank-you-message {
+      display: none;
+      color: #227c62;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 1.5rem;
+      background-color: #e0f8ec;
+      padding: 10px 20px;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -47,8 +74,35 @@
       data-page-url="https://ml604-bt.github.io/ree-comments/"
       data-page-title="REE Hydration Comments">
     </div>
+
+    <div id="thank-you-message">🙏 Thank you for sharing your REE hydration story!</div>
   </div>
 
   <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+  <script>
+    // Detect new comment submission and show thank-you
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          const thankYou = document.getElementById('thank-you-message');
+          if (thankYou) {
+            thankYou.style.display = 'block';
+          }
+        }
+      }
+    });
+
+    const waitForCusdis = () => {
+      const iframe = document.querySelector('iframe[src*="cusdis.com"]');
+      if (iframe) {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        observer.observe(iframeDoc.body, { childList: true, subtree: true });
+      } else {
+        setTimeout(waitForCusdis, 1000);
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', waitForCusdis);
+  </script>
 </body>
 </html>
