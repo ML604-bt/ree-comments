@@ -9,17 +9,19 @@
       background: #f3fef5;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #0c3b2e;
-      padding: 20px;
       display: flex;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
 
     .form-wrapper {
-      background: transparent;        /* 👈 no white background */
-      box-shadow: none;              /* 👈 no floating sheet */
-      border: none;
-      padding: 16px;
-      max-width: 340px;
+      background: white;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(28, 127, 95, 0.15);
+      max-width: 450px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -28,21 +30,18 @@
       text-align: center;
       color: #1c7f5f;
       margin-bottom: 12px;
-      font-size: 1.2rem;
-      white-space: nowrap;            /* 👈 force it onto one line */
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 1.4rem;
     }
 
     .form-field {
       display: flex;
       flex-direction: column;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
     }
 
     .form-field label {
       font-weight: bold;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-size: 0.95rem;
       color: #1c7f5f;
     }
@@ -51,7 +50,7 @@
     .form-field input {
       border: 1px solid #cceee0;
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
       width: 100%;
       box-sizing: border-box;
@@ -59,7 +58,7 @@
     }
 
     textarea {
-      height: 90px;
+      height: 120px;
     }
 
     button {
@@ -67,7 +66,7 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
       width: 100%;
       cursor: pointer;
@@ -83,18 +82,7 @@
       text-align: center;
       font-weight: bold;
       color: #1c7f5f;
-      margin-top: 12px;
-    }
-
-    @media (max-width: 360px) {
-      .form-wrapper {
-        max-width: 95vw;
-        padding: 12px;
-      }
-
-      h2 {
-        font-size: 1.1rem;
-      }
+      margin-top: 16px;
     }
   </style>
 </head>
