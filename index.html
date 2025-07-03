@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>REE Feedback</title>
   <style>
-body {
-  background: linear-gradient(to bottom, #ffffff 10%, #f3fef5 90%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #0c3b2e;
-  display: flex;
-  justify-content: center;
-  padding: 40px 0; /* Adds just enough breathing room */
-  margin: 0;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
+    body {
+      background: linear-gradient(to bottom, #ffffff 10%, #f3fef5 90%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #0c3b2e;
+      display: flex;
+      justify-content: center;
+      padding: 40px 0;
+      margin: 0;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
 
     .form-wrapper {
       background: white;
@@ -80,11 +80,18 @@ body {
 
     .thank-you {
       display: none;
+      opacity: 0;
       text-align: center;
       font-weight: bold;
       color: #1c7f5f;
       margin-top: 16px;
       font-size: 1.1rem;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .thank-you.visible {
+      display: block;
+      opacity: 1;
     }
 
     .hidden {
@@ -94,7 +101,6 @@ body {
 </head>
 <body>
 
-  <!-- ✅ ADD THIS ID -->
   <div class="form-wrapper" id="formContainer">
     <h2>💬 Share Your REE Experience</h2>
 
@@ -127,14 +133,23 @@ body {
         return;
       }
 
+      // Log for future storage
       console.log("Comment:", comment);
       console.log("Name:", name);
 
-      // Clear form + show thank you
+      // Clear form
       document.getElementById("comment").value = "";
       document.getElementById("name").value = "";
+
+      // Hide form + show thank you
       formContainer.classList.add("hidden");
-      thankYouMsg.style.display = "block";
+      thankYouMsg.classList.add("visible");
+
+      // Optional: restore form after 5 seconds
+      setTimeout(() => {
+        thankYouMsg.classList.remove("visible");
+        formContainer.classList.remove("hidden");
+      }, 5000);
     }
   </script>
 
