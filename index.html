@@ -83,12 +83,18 @@
       font-weight: bold;
       color: #1c7f5f;
       margin-top: 16px;
+      font-size: 1.1rem;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
- <div class="form-wrapper">
+  <!-- ✅ ADD THIS ID -->
+  <div class="form-wrapper" id="formContainer">
     <h2>💬 Share Your REE Experience</h2>
 
     <div class="form-field">
@@ -102,10 +108,10 @@
     </div>
 
     <button onclick="submitComment()">Submit Comment</button>
+  </div>
 
-    <div class="thank-you" id="thankYouMsg">
-      💧 Thank you! Your comment has been received.
-    </div>
+  <div class="thank-you" id="thankYouMsg">
+    💧 Thank you! Your comment has been received.
   </div>
 
   <script>
@@ -127,7 +133,7 @@
       document.getElementById("comment").value = "";
       document.getElementById("name").value = "";
       formContainer.classList.add("hidden");
-      thankYouMsg.classList.remove("hidden");
+      thankYouMsg.style.display = "block";
     }
   </script>
 
