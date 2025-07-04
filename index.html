@@ -2,105 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>REE Feedback</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>REE Water Feedback</title>
   <style>
     body {
       background: #f3fef5;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #0c3b2e;
+      margin: 0;
+      padding: 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 10px;
-      margin: 0;
+      align-items: flex-start;
       min-height: 100vh;
     }
-
-    .form-wrapper {
+    .container {
       background: white;
-      padding: 24px;
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(28, 127, 95, 0.15);
-      max-width: 450px;
+      padding: 24px;
+      max-width: 480px;
       width: 100%;
+      box-shadow: 0 8px 24px rgba(28, 127, 95, 0.15);
       box-sizing: border-box;
     }
-
     h2 {
+      color: #1c7f5f;
+      margin-bottom: 20px;
       text-align: center;
-      color: #1c7f5f;
-      font-size: 1.3rem;
-      margin-bottom: 16px;
     }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
-    }
-
-    .form-field label {
+    label {
       font-weight: 600;
-      font-size: 0.95rem;
-      color: #1c7f5f;
-      margin-bottom: 6px;
-    }
-
-    .form-field textarea,
-    .form-field input {
-      border: 1px solid #cceee0;
-      border-radius: 12px;
-      padding: 12px;
       font-size: 1rem;
+      color: #1c7f5f;
+      display: block;
+      margin-bottom: 8px;
+    }
+    textarea, input[type="text"] {
       width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #cceee0;
+      font-size: 1rem;
+      resize: vertical;
+      box-sizing: border-box;
+      margin-bottom: 20px;
       background: #fff;
+      color: #0c3b2e;
     }
-
     textarea {
-      height: 100px;
+      min-height: 100px;
     }
-
     button {
       background-color: #1c7f5f;
       color: white;
       border: none;
       border-radius: 12px;
       padding: 14px;
-      font-size: 1rem;
-      width: 100%;
+      font-size: 1.1rem;
       cursor: pointer;
+      width: 100%;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #16664b;
     }
-
     .thank-you {
       display: none;
-      text-align: center;
       color: #1c7f5f;
       font-weight: bold;
-      font-size: 1.1rem;
-      padding: 30px 16px;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 30px 10px;
+    }
+    @media (max-width: 520px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 16px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="form-wrapper" id="formContainer">
+  <div class="container" id="formContainer">
     <h2>💬 Share Your REE Experience</h2>
+    <label for="comment">Your Comment*</label>
+    <textarea id="comment" placeholder="Write your comment here..." required></textarea>
 
-    <div class="form-field">
-      <label for="comment">Your Comment*</label>
-      <textarea id="comment" placeholder="Write your comment here..."></textarea>
-    </div>
-
-    <div class="form-field">
-      <label for="name">Your Name (optional)</label>
-      <input type="text" id="name" placeholder="Your name" />
-    </div>
+    <label for="name">Your Name (optional)</label>
+    <input type="text" id="name" placeholder="Your name" />
 
     <button onclick="submitComment()">Submit Comment</button>
   </div>
@@ -111,38 +103,34 @@
 
   <script>
     async function submitComment() {
-      const comment = document.getElementById("comment").value.trim();
-      const name = document.getElementById("name").value.trim();
-      const thankYouMsg = document.getElementById("thankYouMsg");
-      const formContainer = document.getElementById("formContainer");
+      const comment = document.getElementById('comment').value.trim();
+      const name = document.getElementById('name').value.trim();
+      const formContainer = document.getElementById('formContainer');
+      const thankYouMsg = document.getElementById('thankYouMsg');
 
       if (!comment) {
-        alert("Please write your comment before submitting.");
+        alert('Please write your comment before submitting.');
         return;
       }
 
-      // Your deployed Google Apps Script Web App URL here:
-      const scriptURL = "https://script.google.com/macros/s/AKfycbwYm4N8iQmgSYSoa399bsClidcVaTug0eH3wXe_fmeblicHr3PVqC8_OzJkqiuLQukPvw/exec";
+      const scriptURL = 'https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec';
 
       try {
         const response = await fetch(scriptURL, {
           method: 'POST',
-          body: new URLSearchParams({ comment, name })
+          body: new URLSearchParams({ comment, name }),
         });
 
-        if (response.ok) {
-          const json = await response.json();
-          if (json.result === "success") {
-            formContainer.style.display = "none";
-            thankYouMsg.style.display = "block";
-          } else {
-            alert("Server error: " + (json.message || "Unknown error"));
-          }
+        const text = await response.text();
+
+        if (text.toLowerCase().includes('success')) {
+          formContainer.style.display = 'none';
+          thankYouMsg.style.display = 'block';
         } else {
-          alert("Network response was not OK. Status: " + response.status);
+          alert('Error submitting comment: ' + text);
         }
       } catch (error) {
-        alert("Error: " + error.message);
+        alert('Submission failed: ' + error.message);
       }
     }
   </script>
