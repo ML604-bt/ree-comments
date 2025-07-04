@@ -111,13 +111,15 @@
       }
 
       try {
-      const formBody = `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`;
+        // Manually constructing the form body
+        const formBody = 'comment=' + encodeURIComponent(comment) + '&name=' + encodeURIComponent(name);
 
-     const response = await fetch(scriptURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formBody
-      });
+        // Sending the POST request
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formBody
+        });
 
         if (response.ok) {
           const text = await response.text();
