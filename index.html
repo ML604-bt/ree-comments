@@ -3,146 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>REE Feedback</title>
+  <title>REE Public Feedback</title>
   <style>
     body {
-      background: linear-gradient(to bottom, #ffffff 10%, #f3fef5 90%);
+      background: #f3fef5;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #0c3b2e;
       display: flex;
       justify-content: center;
-      padding: 40px 0;
+      align-items: center;
+      padding: 20px;
       margin: 0;
-      min-height: 100vh;
-      box-sizing: border-box;
+      height: 100vh;
     }
-
     .form-wrapper {
       background: white;
-      padding: 28px 24px;
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(28, 127, 95, 0.15);
-      max-width: 450px;
+      padding: 20px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(28, 127, 95, 0.15);
       width: 100%;
-      box-sizing: border-box;
+      max-width: 400px;
     }
-
     h2 {
       text-align: center;
       color: #1c7f5f;
       margin-bottom: 12px;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
-
     .form-field {
-      display: flex;
-      flex-direction: column;
       margin-bottom: 14px;
     }
-
     .form-field label {
       font-weight: bold;
-      margin-bottom: 6px;
       font-size: 0.95rem;
       color: #1c7f5f;
+      display: block;
+      margin-bottom: 6px;
     }
-
-    .form-field textarea,
-    .form-field input {
+    textarea,
+    input {
+      width: 100%;
+      padding: 12px;
       border: 1px solid #cceee0;
       border-radius: 12px;
-      padding: 12px;
       font-size: 1rem;
-      width: 100%;
-      background: #ffffff;
       box-sizing: border-box;
     }
-
     textarea {
-      height: 100px;
+      resize: vertical;
+      min-height: 80px;
     }
-
     button {
+      width: 100%;
+      padding: 14px;
       background-color: #1c7f5f;
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px;
       font-size: 1rem;
-      width: 100%;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #16664b;
     }
-
     .thank-you {
-      display: none;
       text-align: center;
-      font-weight: bold;
       color: #1c7f5f;
-      margin-top: 16px;
+      font-weight: bold;
       font-size: 1.1rem;
-    }
-
-    .hidden {
       display: none;
+      margin-top: 16px;
     }
   </style>
 </head>
 <body>
-
-  <div class="form-wrapper" id="formContainer">
+  <div class="form-wrapper">
     <h2>💬 Share Your REE Experience</h2>
-
-    <div class="form-field">
-      <label for="comment">Your Comment*</label>
-      <textarea id="comment" placeholder="Write your comment here..."></textarea>
-    </div>
-
-    <div class="form-field">
-      <label for="name">Your Name (optional)</label>
-      <input type="text" id="name" placeholder="Your name" />
-    </div>
-
-    <button onclick="submitComment()">Submit Comment</button>
-  </div>
-
-  <div class="thank-you" id="thankYouMsg">
-    💧 Thank you! Your comment has been received.
+    <form id="reeForm">
+      <div class="form-field">
+        <label for="comment">Your Comment*</label>
+        <textarea id="comment" name="comment" required placeholder="Write your comment here..."></textarea>
+      </div>
+      <div class="form-field">
+        <label for="name">Your Name (optional)</label>
+        <input type="text" id="name" name="name" placeholder="Your name" />
+      </div>
+      <button type="submit">Submit Comment</button>
+    </form>
+    <div class="thank-you" id="thankYouMessage">💧 Thank you! Your comment has been received.</div>
   </div>
 
   <script>
-    function submitComment() {
+    document.getElementById("reeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
       const comment = document.getElementById("comment").value.trim();
       const name = document.getElementById("name").value.trim();
-      const thankYouMsg = document.getElementById("thankYouMsg");
-      const formContainer = document.getElementById("formContainer");
-
-      if (!comment) {
-        alert("Please write your comment before submitting.");
-        return;
-      }
-
-      // Send to Google Apps Script
-      fetch("https://script.google.com/macros/s/AKfycbwEN758TC6PGE8OJ6aMLy72d_BAJd2BlWFgfVKwjlTyDm2sME8bPTHDh_5dwsc2foaXrA/exec", {
+      if (!comment) return alert("Please write your comment.");
+      
+      fetch("https://script.google.com/macros/s/AKfycbwCLu1AoKUHHbHHMfuPFF4rfH7_nsDTBr44Lqm_AXwK/dev", {
         method: "POST",
         mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ comment, name })
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
       });
 
-      // Reset form and show message
-      document.getElementById("comment").value = "";
-      document.getElementById("name").value = "";
-      formContainer.classList.add("hidden");
-      thankYouMsg.style.display = "block";
-    }
+      // Clear and show thank you
+      document.getElementById("reeForm").reset();
+      document.getElementById("thankYouMessage").style.display = "block";
+    });
   </script>
-
 </body>
 </html>
