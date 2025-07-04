@@ -99,43 +99,47 @@
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwYm4N8iQmgSYSoa399bsClidcVaTug0eH3wXe_fmeblicHr3PVqC8_OzJkqiuLQukPvw/exec';
 
-    document.getElementById('submitBtn').addEventListener('click', async () => {
-      const commentEl = document.getElementById('comment');
-      const nameEl = document.getElementById('name');
-      const comment = commentEl.value.trim();
-      const name = nameEl.value.trim();
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const commentEl = document.getElementById('comment');
+  const nameEl = document.getElementById('name');
+  const comment = commentEl.value.trim();
+  const name = nameEl.value.trim();
 
-      if (!comment) {
-        alert('Please write your comment before submitting.');
-        return;
-      }
+  if (!comment) {
+    alert('Please write your comment before submitting.');
+    return;
+  }
 
-      try {
-        // Manually constructing the form body
-        const formBody = 'comment=' + encodeURIComponent(comment) + '&name=' + encodeURIComponent(name);
+  try {
+    // Manually constructing the form body
+    const formBody = 'comment=' + encodeURIComponent(comment) + '&name=' + encodeURIComponent(name);
 
-        // Sending the POST request
-        const response = await fetch(scriptURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: formBody
-        });
+    // Log the form body to check it
+    console.log("Form Body: ", formBody); // Add this line to log the form data
 
-        if (response.ok) {
-          const text = await response.text();
-          if (text === 'Success') {
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('thankYouMsg').style.display = 'block';
-          } else {
-            alert('Server error: ' + text);
-          }
-        } else {
-          alert('Network error: ' + response.status);
-        }
-      } catch (err) {
-        alert('Error: ' + err.message);
-      }
+    // Sending the POST request
+    const response = await fetch(scriptURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody
     });
+
+    if (response.ok) {
+      const text = await response.text();
+      if (text === 'Success') {
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('thankYouMsg').style.display = 'block';
+      } else {
+        alert('Server error: ' + text);
+      }
+    } else {
+      alert('Network error: ' + response.status);
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+
   </script>
 </body>
 </html>
