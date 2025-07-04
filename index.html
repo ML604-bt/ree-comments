@@ -111,14 +111,13 @@
       }
 
       try {
-   const formBody = `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`;
+      const formBody = `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`;
 
-const response = await fetch(scriptURL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  body: formBody
-});
-
+     const response = await fetch(scriptURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody
+      });
 
         if (response.ok) {
           const text = await response.text();
