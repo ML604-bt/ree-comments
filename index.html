@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>REE Public Feedback</title>
+  <title>REE Feedback</title>
   <style>
     body {
       background: #f3fef5;
@@ -12,106 +12,139 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 10px;
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
     }
+
     .form-wrapper {
       background: white;
-      padding: 20px 24px;
+      padding: 24px;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(28, 127, 95, 0.15);
+      box-shadow: 0 8px 24px rgba(28, 127, 95, 0.15);
+      max-width: 450px;
       width: 100%;
-      max-width: 400px;
+      box-sizing: border-box;
     }
+
     h2 {
       text-align: center;
       color: #1c7f5f;
-      margin-bottom: 12px;
       font-size: 1.3rem;
+      margin-bottom: 16px;
     }
+
     .form-field {
-      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
     }
+
     .form-field label {
-      font-weight: bold;
+      font-weight: 600;
       font-size: 0.95rem;
       color: #1c7f5f;
-      display: block;
       margin-bottom: 6px;
     }
-    textarea,
-    input {
-      width: 100%;
-      padding: 12px;
+
+    .form-field textarea,
+    .form-field input {
       border: 1px solid #cceee0;
       border-radius: 12px;
+      padding: 12px;
       font-size: 1rem;
-      box-sizing: border-box;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-    button {
       width: 100%;
-      padding: 14px;
+      background: #fff;
+    }
+
+    textarea {
+      height: 100px;
+    }
+
+    button {
       background-color: #1c7f5f;
       color: white;
       border: none;
       border-radius: 12px;
+      padding: 14px;
       font-size: 1rem;
+      width: 100%;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: #16664b;
     }
+
     .thank-you {
+      display: none;
       text-align: center;
       color: #1c7f5f;
       font-weight: bold;
       font-size: 1.1rem;
+      padding: 30px 16px;
+    }
+
+    .hidden {
       display: none;
-      margin-top: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="form-wrapper">
+
+  <div class="form-wrapper" id="formContainer">
     <h2>💬 Share Your REE Experience</h2>
-    <form id="reeForm">
-      <div class="form-field">
-        <label for="comment">Your Comment*</label>
-        <textarea id="comment" name="comment" required placeholder="Write your comment here..."></textarea>
-      </div>
-      <div class="form-field">
-        <label for="name">Your Name (optional)</label>
-        <input type="text" id="name" name="name" placeholder="Your name" />
-      </div>
-      <button type="submit">Submit Comment</button>
-    </form>
-    <div class="thank-you" id="thankYouMessage">💧 Thank you! Your comment has been received.</div>
+
+    <div class="form-field">
+      <label for="comment">Your Comment*</label>
+      <textarea id="comment" placeholder="Write your comment here..."></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="name">Your Name (optional)</label>
+      <input type="text" id="name" placeholder="Your name" />
+    </div>
+
+    <button onclick="submitComment()">Submit Comment</button>
+  </div>
+
+  <div class="thank-you" id="thankYouMsg">
+    💧 Thank you! Your comment has been received.
   </div>
 
   <script>
-    document.getElementById("reeForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    function submitComment() {
       const comment = document.getElementById("comment").value.trim();
       const name = document.getElementById("name").value.trim();
-      if (!comment) return alert("Please write your comment.");
-      
-      fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxFyX5mJYuh4NY7TiHFxZ07_Wvqoo6Cy4qkkwD4OJDZuo4FxFQ0nepEo7Vxd35hapP-/exec/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
-      });
+      const thankYouMsg = document.getElementById("thankYouMsg");
+      const formContainer = document.getElementById("formContainer");
 
-      // Clear and show thank you
-      document.getElementById("reeForm").reset();
-      document.getElementById("thankYouMessage").style.display = "block";
-    });
+      if (!comment) {
+        alert("Please write your comment before submitting.");
+        return;
+      }
+
+      // 👉 REPLACE with your deployed Google Apps Script Web App URL
+      const scriptURL = "https://script.google.com/macros/s/AKfycbwXXXXX/exec";
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: new URLSearchParams({ comment, name })
+      })
+      .then(response => {
+        if (response.ok) {
+          formContainer.classList.add("hidden");
+          thankYouMsg.style.display = "block";
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      })
+      .catch(error => {
+        alert("Error: " + error.message);
+      });
+    }
   </script>
+
 </body>
 </html>
