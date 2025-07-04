@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REE Water Feedback</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>REE Feedback</title>
   <style>
     body {
       background: #f3fef5;
@@ -12,48 +12,55 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 10px;
-      min-height: 100vh;
+      height: 100vh;
       margin: 0;
     }
+
     .form-wrapper {
       background: white;
-      padding: 24px;
-      border-radius: 16px;
+      padding: 50px 0;
+      border-radius: 20px;
       box-shadow: 0 8px 24px rgba(28, 127, 95, 0.15);
       max-width: 450px;
       width: 100%;
       box-sizing: border-box;
     }
+
     h2 {
       text-align: center;
       color: #1c7f5f;
-      font-size: 1.3rem;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
     }
+
     .form-field {
-      margin-bottom: 16px;
       display: flex;
       flex-direction: column;
+      margin: 0 24px 20px;
     }
-    label {
-      font-weight: 600;
+
+    .form-field label {
+      font-weight: bold;
+      margin-bottom: 8px;
       font-size: 0.95rem;
       color: #1c7f5f;
-      margin-bottom: 6px;
     }
-    textarea, input {
+
+    .form-field textarea,
+    .form-field input {
       border: 1px solid #cceee0;
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
       width: 100%;
-      background: #fff;
-      resize: vertical;
+      box-sizing: border-box;
+      background: #ffffff;
     }
+
     textarea {
-      min-height: 100px;
+      height: 100px;
     }
+
     button {
       background-color: #1c7f5f;
       color: white;
@@ -61,85 +68,73 @@
       border-radius: 12px;
       padding: 14px;
       font-size: 1rem;
-      width: 100%;
+      width: calc(100% - 48px);
+      margin: 0 24px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: #16664b;
     }
+
     .thank-you {
-      display: none;
       text-align: center;
-      color: #1c7f5f;
       font-weight: bold;
+      color: #1c7f5f;
+      margin-top: 24px;
       font-size: 1.1rem;
-      padding: 30px 16px;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
+
   <div class="form-wrapper" id="formContainer">
     <h2>💬 Share Your REE Experience</h2>
+
     <div class="form-field">
       <label for="comment">Your Comment*</label>
       <textarea id="comment" placeholder="Write your comment here..."></textarea>
     </div>
+
     <div class="form-field">
       <label for="name">Your Name (optional)</label>
       <input type="text" id="name" placeholder="Your name" />
     </div>
-    <button id="submitBtn">Submit Comment</button>
+
+    <button onclick="submitComment()">Submit Comment</button>
   </div>
 
-  <div class="thank-you" id="thankYouMsg">
+  <div class="thank-you hidden" id="thankYouMsg">
     💧 Thank you! Your comment has been received.
   </div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwTI0j5ujIqaqJEnAhq5TtUV1QGQnfeASrDtJgrs4vagsK6QMgCJlvwR8QXYRDlC-GW/exec';
+    function submitComment() {
+      const comment = document.getElementById("comment").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const thankYouMsg = document.getElementById("thankYouMsg");
+      const formContainer = document.getElementById("formContainer");
 
-document.getElementById('submitBtn').addEventListener('click', async () => {
-  const commentEl = document.getElementById('comment');
-  const nameEl = document.getElementById('name');
-  const comment = commentEl.value.trim();
-  const name = nameEl.value.trim();
-
-  if (!comment) {
-    alert('Please write your comment before submitting.');
-    return;
-  }
-
-  try {
-    // Manually constructing the form body
-    const formBody = 'comment=' + encodeURIComponent(comment) + '&name=' + encodeURIComponent(name);
-
-    // Log the form body to check it
-    console.log("Form Body: ", formBody); // Add this line to log the form data
-
-    // Sending the POST request
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formBody
-    });
-
-    if (response.ok) {
-      const text = await response.text();
-      if (text === 'Success') {
-        document.getElementById('formContainer').style.display = 'none';
-        document.getElementById('thankYouMsg').style.display = 'block';
-      } else {
-        alert('Server error: ' + text);
+      if (!comment) {
+        alert("Please write your comment before submitting.");
+        return;
       }
-    } else {
-      alert('Network error: ' + response.status);
-    }
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-});
 
+      console.log("Comment:", comment);
+      console.log("Name:", name);
+
+      // Clear form + show thank you
+      document.getElementById("comment").value = "";
+      document.getElementById("name").value = "";
+      formContainer.classList.add("hidden");
+      thankYouMsg.classList.remove("hidden");
+    }
   </script>
+
 </body>
 </html>
