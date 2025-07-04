@@ -85,10 +85,6 @@
       font-size: 1.1rem;
       padding: 30px 16px;
     }
-
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -114,7 +110,7 @@
   </div>
 
   <script>
-    function submitComment() {
+    async function submitComment() {
       const comment = document.getElementById("comment").value.trim();
       const name = document.getElementById("name").value.trim();
       const thankYouMsg = document.getElementById("thankYouMsg");
@@ -125,24 +121,29 @@
         return;
       }
 
-      // 👉 REPLACE with your deployed Google Apps Script Web App URL
-      const scriptURL = "https://script.google.com/macros/s/AKfycbxeb9SXZCydUOVCnmZWY1O0GNzy2iGD5YA44-iZoiTSOsJ-kbYuqluDP5ZDWp84suaAsQ/exec";
+      // Your deployed Google Apps Script Web App URL here:
+      const scriptURL = "https://script.google.com/macros/s/AKfycbyUb4MD6yjMfM3IU7Qod5c7425iVcI9xwoj7PIcsKZ2Ir1fHq-fVWSybJtG-siM-OjqWg/exec";
 
-      fetch(scriptURL, {
-        method: 'POST',
-        body: new URLSearchParams({ comment, name })
-      })
-      .then(response => {
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: new URLSearchParams({ comment, name })
+        });
+
         if (response.ok) {
-          formContainer.classList.add("hidden");
-          thankYouMsg.style.display = "block";
+          const json = await response.json();
+          if (json.result === "success") {
+            formContainer.style.display = "none";
+            thankYouMsg.style.display = "block";
+          } else {
+            alert("Server error: " + (json.message || "Unknown error"));
+          }
         } else {
-          alert("Something went wrong. Please try again.");
+          alert("Network response was not OK. Status: " + response.status);
         }
-      })
-      .catch(error => {
+      } catch (error) {
         alert("Error: " + error.message);
-      });
+      }
     }
   </script>
 
