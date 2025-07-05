@@ -58,10 +58,13 @@
   <div id="commentsContainer">Loading comments...</div>
 
 <script>
-  // JSONP callback function to display comments
+  // Show status visually
+  const container = document.getElementById('commentsContainer');
+  container.innerHTML = '🔄 Fetching comments...';
+
+  // JSONP callback function
   function displayComments(comments) {
-    const container = document.getElementById('commentsContainer');
-    container.innerHTML = '';
+    container.innerHTML = ''; // Clear the loading message
 
     if (!Array.isArray(comments) || comments.length === 0) {
       container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
@@ -82,7 +85,7 @@
     });
   }
 
-  // Sanitize user input to prevent XSS attacks
+  // Sanitize to prevent HTML injection
   function sanitizeHTML(str) {
     return String(str).replace(/[&<>"']/g, tag => ({
       '&': '&amp;',
@@ -93,15 +96,18 @@
     }[tag]));
   }
 
-  // Load comments using JSONP
+  // Inject script tag for JSONP
   function loadComments() {
     const script = document.createElement('script');
     script.src = 'https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec?callback=displayComments';
+    script.onerror = function() {
+      container.innerHTML = '❌ Failed to fetch comments (script not loading)';
+    };
     document.body.appendChild(script);
   }
 
-  // Initialize when DOM is ready
-  document.addEventListener('DOMContentLoaded', loadComments);
+  loadComments();
 </script>
+
 </body>
 </html>
