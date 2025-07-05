@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>💬 What People Are Saying</title>
+  <title>Real Feedback from Our Community</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -54,54 +54,54 @@
   </style>
 </head>
 <body>
-  <h2>💬 What People Are Saying</h2>
+  <h2>Real Feedback from Our Community</h2>
   <div id="commentsContainer">Loading comments...</div>
 
-  <script>
-    // JSONP callback function to display comments
-    function displayComments(comments) {
-      const container = document.getElementById('commentsContainer');
-      container.innerHTML = '';
+<script>
+  // JSONP callback function to display comments
+  function displayComments(comments) {
+    const container = document.getElementById('commentsContainer');
+    container.innerHTML = '';
 
-      if (!Array.isArray(comments) || comments.length === 0) {
-        container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
-        return;
-      }
-
-      comments.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'comment';
-        div.innerHTML = `
-          <div>
-            <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
-            <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
-          </div>
-          <div class="comment-text">${sanitizeHTML(c.comment)}</div>
-        `;
-        container.appendChild(div);
-      });
+    if (!Array.isArray(comments) || comments.length === 0) {
+      container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
+      return;
     }
 
-    // Sanitize user input to prevent XSS attacks
-    function sanitizeHTML(str) {
-      return String(str).replace(/[&<>"']/g, tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      }[tag]));
-    }
+    comments.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'comment';
+      div.innerHTML = `
+        <div>
+          <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
+          <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
+        </div>
+        <div class="comment-text">${sanitizeHTML(c.comment)}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
 
-    // Load comments using JSONP
-    function loadComments() {
-      const script = document.createElement('script');
-      script.src = 'https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec?callback=displayComments';
-      document.body.appendChild(script);
-    }
+  // Sanitize user input to prevent XSS attacks
+  function sanitizeHTML(str) {
+    return String(str).replace(/[&<>"']/g, tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[tag]));
+  }
 
-// Initialize loading after DOM is ready
-document.addEventListener('DOMContentLoaded', loadComments);
-  </script>
+  // Load comments using JSONP
+  function loadComments() {
+    const script = document.createElement('script');
+    script.src = 'https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec?callback=displayComments';
+    document.body.appendChild(script);
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', loadComments);
+</script>
 </body>
 </html>
