@@ -13,22 +13,30 @@
   padding: 0 10px; /* Reduce side space */
   max-width: 100%;
 }
+@media (min-width: 768px) {
+  body {
+    max-width: 700px;
+    padding: 0 20px;
+  }
+}
 
     .section {
-      background: white;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.08);
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.08);
+}
+.comment {
+  margin-bottom: 12px;
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+
+h2 {
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
 
     textarea, input {
       width: 100%;
