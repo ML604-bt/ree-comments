@@ -70,6 +70,12 @@
         visibility: hidden;
       }
     }
+
+    .footer-link {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -84,6 +90,11 @@
     </div>
 
     <div id="thankYouMessage">✅ Thank you, your comment has been submitted.</div>
+    <div class="footer-link">
+      <a href="https://docs.google.com/spreadsheets/d/1dnq2TPTsIwEHbZ95SwkgVNuo8vJ-_B_gOcsRGyNBP8c/edit?usp=sharing" target="_blank">
+        🔗 View All Comments
+      </a>
+    </div>
   </div>
 
   <script>
@@ -95,61 +106,32 @@
 
       if (!comment) return;
 
-      // Hide the full form wrapper including the heading
-      document.getElementById('formWrapper').style.display = 'none';
+      const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
 
-      // Show thank you message
-      const msg = document.getElementById('thankYouMessage');
-      msg.style.display = 'block';
+      fetch(scriptURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
+      })
+      .then(response => response.text())
+      .then(result => {
+        // Hide form after successful submission
+        document.getElementById('formWrapper').style.display = 'none';
 
-      // Reset form values (optional for future)
-      document.getElementById('comment').value = '';
-      document.getElementById('name').value = '';
+        // Show thank you message
+        document.getElementById('thankYouMessage').style.display = 'block';
+
+        // Reset form fields
+        document.getElementById('comment').value = '';
+        document.getElementById('name').value = '';
+      })
+      .catch(error => {
+        alert("⚠️ Error submitting your comment. Please try again.");
+        console.error("Submission error:", error);
+      });
     });
-  <script>
-  document.getElementById('commentForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const comment = document.getElementById('comment').value.trim();
-    const name = document.getElementById('name').value.trim();
-
-    if (!comment) return;
-
-    // 💡 Replace this with YOUR real Apps Script Web App URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
-
-    // Submit data to Google Apps Script
-    fetch(scriptURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
-    })
-    .then(response => response.text())
-    .then(result => {
-      // Hide the form + heading
-      document.getElementById('formWrapper').style.display = 'none';
-
-      // Show thank you message
-      const msg = document.getElementById('thankYouMessage');
-      msg.style.display = 'block';
-
-      // Optional: reset inputs
-      document.getElementById('comment').value = '';
-      document.getElementById('name').value = '';
-    })
-    .catch(error => {
-      alert("⚠️ Error submitting your comment. Please try again.");
-      console.error("Submission error:", error);
-    });
-  });
-</script>
-
+  </script>
 </body>
 </html>
-<p style="text-align: center; font-size: 14px;">
-  <a href="https://docs.google.com/spreadsheets/d/XXXXXXX/edit?usp=sharing" target="_blank">
-    🔗 View All Comments
-  </a>
-</p>
