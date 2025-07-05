@@ -99,7 +99,39 @@
 
   <!-- Comments Display Section -->
   <div class="section">
-    <h2>💬 What People Are Saying</h2>
+    <h2 class="feedback-title">Real Feedback from Our Community</h2>
+<p class="feedback-subtitle">Real voices. Honest stories. Unfiltered feedback.</p>
+
+<style>
+  .feedback-title {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #2c7f57;
+    text-align: center;
+    margin-bottom: 0.3rem;
+    position: relative;
+  }
+  .feedback-title::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #2c7f57;
+    margin: 0.6rem auto 0;
+    border-radius: 2px;
+  }
+  .feedback-subtitle {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    color: #577f68;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+</style>
+
     <div id="commentsContainer">Loading comments...</div>
   </div>
 
