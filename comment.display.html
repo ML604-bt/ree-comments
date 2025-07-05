@@ -100,8 +100,8 @@
       document.body.appendChild(script);
     }
 
-    // Initialize loading on page load
-    loadComments();
+// Initialize loading after DOM is ready
+document.addEventListener('DOMContentLoaded', loadComments);
   </script>
 </body>
 </html>
