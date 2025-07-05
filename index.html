@@ -3,30 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>REE Comment Box</title>
+  <title>REE Feedback Portal</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f0fdf5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 20px;
+      color: #2c7f57;
     }
 
-    .container {
+    .section {
       background: white;
       border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      text-align: center;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     h2 {
-      color: #2c7f57;
+      text-align: center;
       margin-bottom: 20px;
     }
 
@@ -37,7 +36,6 @@
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      box-sizing: border-box;
     }
 
     button {
@@ -45,11 +43,10 @@
       padding: 12px;
       background-color: #2c7f57;
       color: white;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
 
     button:hover {
@@ -58,6 +55,7 @@
 
     #thankYouMessage {
       display: none;
+      text-align: center;
       font-size: 18px;
       color: #2c7f57;
       margin-top: 20px;
@@ -71,33 +69,67 @@
       }
     }
 
+    .comment {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .comment:last-child {
+      border-bottom: none;
+    }
+
+    .comment-name {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .comment-timestamp {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .comment-text {
+      margin-top: 5px;
+      white-space: pre-wrap;
+    }
+
+    .no-comments {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      padding: 20px 0;
+    }
+
     .footer-link {
-      margin-top: 20px;
       text-align: center;
       font-size: 14px;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="formWrapper">
-      <h2>💬 Share Your Comment</h2>
-      <form id="commentForm">
-        <textarea id="comment" name="comment" placeholder="Write your comment here..." required></textarea>
-        <input type="text" id="name" name="name" placeholder="Your name (optional)">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
 
+  <!-- ✅ Comment Form -->
+  <div class="section" id="formSection">
+    <h2>💬 Share Your REE Comment</h2>
+    <form id="commentForm">
+      <textarea id="comment" name="comment" placeholder="Write your comment here..." required></textarea>
+      <input type="text" id="name" name="name" placeholder="Your name (optional)">
+      <button type="submit">Submit</button>
+    </form>
     <div id="thankYouMessage">✅ Thank you, your comment has been submitted.</div>
-    <div class="footer-link">
-      <a href="https://docs.google.com/spreadsheets/d/1dnq2TPTsIwEHbZ95SwkgVNuo8vJ-_B_gOcsRGyNBP8c/edit?usp=sharing" target="_blank">
-        🔗 View All Comments
-      </a>
-    </div>
+  </div>
+
+  <!-- ✅ Comment Display -->
+  <div class="section">
+    <h2>💬 What People Are Saying</h2>
+    <div id="commentsContainer">Loading comments...</div>
   </div>
 
   <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
+
+    // Handle comment form submission
     document.getElementById('commentForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -106,8 +138,6 @@
 
       if (!comment) return;
 
-      const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
-
       fetch(scriptURL, {
         method: "POST",
         headers: {
@@ -115,23 +145,54 @@
         },
         body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
       })
-      .then(response => response.text())
-      .then(result => {
-        // Hide form after successful submission
-        document.getElementById('formWrapper').style.display = 'none';
-
-        // Show thank you message
+      .then(res => res.text())
+      .then(() => {
+        document.getElementById('formSection').style.display = 'none';
         document.getElementById('thankYouMessage').style.display = 'block';
-
-        // Reset form fields
-        document.getElementById('comment').value = '';
-        document.getElementById('name').value = '';
+        loadComments(); // refresh after submit
       })
-      .catch(error => {
-        alert("⚠️ Error submitting your comment. Please try again.");
-        console.error("Submission error:", error);
+      .catch(err => {
+        alert("⚠️ Failed to submit comment. Please try again.");
+        console.error(err);
       });
     });
+
+    // Load comments into display section
+    function loadComments() {
+      fetch(scriptURL)
+        .then(res => res.text())
+        .then(text => JSON.parse(text))
+        .then(data => {
+          const container = document.getElementById('commentsContainer');
+          container.innerHTML = '';
+
+          if (!data.length) {
+            container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
+            return;
+          }
+
+          data.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'comment';
+            div.innerHTML = `
+              <div>
+                <span class="comment-name">${c.name || 'Anonymous'}</span>
+                <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
+              </div>
+              <div class="comment-text">${c.comment}</div>
+            `;
+            container.appendChild(div);
+          });
+        })
+        .catch(err => {
+          document.getElementById('commentsContainer').textContent = '❌ Failed to load comments.';
+          console.error(err);
+        });
+    }
+
+    // Initial comment load
+    loadComments();
   </script>
+
 </body>
 </html>
