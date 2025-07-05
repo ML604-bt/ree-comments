@@ -6,37 +6,32 @@
   <title>REE Feedback Portal</title>
   <style>
     body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0fdf5;
-  color: #2c7f57;
-  margin: 0 auto;
-  padding: 0 10px; /* Reduce side space */
-  max-width: 100%;
-}
-@media (min-width: 768px) {
-  body {
-    max-width: 700px;
-    padding: 0 20px;
-  }
-}
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0fdf5;
+      color: #2c7f57;
+      margin: 0 auto;
+      padding: 0 10px; /* Reduce side space */
+      max-width: 100%;
+    }
+    @media (min-width: 768px) {
+      body {
+        max-width: 700px;
+        padding: 0 20px;
+      }
+    }
 
     .section {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 30px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.08);
-}
-.comment {
-  margin-bottom: 12px;
-}
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
 
-
-h2 {
-  font-weight: 600;
-  font-size: 1.3rem;
-}
-
+    h2 {
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
 
     textarea, input {
       width: 100%;
@@ -81,6 +76,7 @@ h2 {
     .comment {
       padding: 12px;
       border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 12px;
     }
 
     .comment:last-child {
@@ -108,17 +104,11 @@ h2 {
       font-style: italic;
       padding: 20px 0;
     }
-
-    .footer-link {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 30px;
-    }
   </style>
 </head>
 <body>
 
-  <!-- ✅ Comment Form -->
+  <!-- ✅ Comment Form Section -->
   <div class="section" id="formSection">
     <h2>💬 Share Your REE Comment</h2>
     <form id="commentForm">
@@ -126,10 +116,12 @@ h2 {
       <input type="text" id="name" name="name" placeholder="Your name (optional)">
       <button type="submit">Submit</button>
     </form>
-    <div id="thankYouMessage">✅ Thank you, your comment has been submitted.</div>
   </div>
 
-  <!-- ✅ Comment Display -->
+  <!-- ✅ Thank You Message OUTSIDE formSection -->
+  <div id="thankYouMessage">✅ Thank you, your comment has been submitted.</div>
+
+  <!-- ✅ Comment Display Section -->
   <div class="section">
     <h2>💬 What People Are Saying</h2>
     <div id="commentsContainer">Loading comments...</div>
@@ -137,6 +129,20 @@ h2 {
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
+
+    // Sanitize HTML to prevent XSS
+    function sanitizeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, function(tag) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[tag] || tag;
+      });
+    }
 
     // Handle comment form submission
     document.getElementById('commentForm').addEventListener('submit', function(e) {
@@ -156,9 +162,21 @@ h2 {
       })
       .then(res => res.text())
       .then(() => {
+        // Hide form, show thank you message
         document.getElementById('formSection').style.display = 'none';
-        document.getElementById('thankYouMessage').style.display = 'block';
-        loadComments(); // refresh after submit
+        const thankYouMsg = document.getElementById('thankYouMessage');
+        thankYouMsg.style.display = 'block';
+
+        loadComments(); // refresh comments after submit
+
+        // Optional: Reset form fields after submission (in case user comes back)
+        document.getElementById('commentForm').reset();
+
+        // Optional: Hide thank you message & show form again after 6 seconds
+        setTimeout(() => {
+          thankYouMsg.style.display = 'none';
+          document.getElementById('formSection').style.display = 'block';
+        }, 6000);
       })
       .catch(err => {
         alert("⚠️ Failed to submit comment. Please try again.");
@@ -185,10 +203,10 @@ h2 {
             div.className = 'comment';
             div.innerHTML = `
               <div>
-                <span class="comment-name">${c.name || 'Anonymous'}</span>
+                <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
                 <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
               </div>
-              <div class="comment-text">${c.comment}</div>
+              <div class="comment-text">${sanitizeHTML(c.comment)}</div>
             `;
             container.appendChild(div);
           });
@@ -199,7 +217,7 @@ h2 {
         });
     }
 
-    // Initial comment load
+    // Initial comment load on page open
     loadComments();
   </script>
 
