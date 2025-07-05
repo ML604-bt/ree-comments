@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Submit Your REE Feedback</title>
+  <title>Your Comment?</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f0fdf5;
       color: #2c7f57;
-      max-width: 600px;
+      max-width: 100%;
       margin: 3rem auto;
-      padding: 1rem;
+      padding: 20px;
     }
     h2 {
       text-align: center;
@@ -26,7 +26,7 @@
     }
     textarea, input[type="text"] {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       margin-bottom: 1rem;
       font-size: 1rem;
       border-radius: 8px;
@@ -61,14 +61,14 @@
 </head>
 <body>
 
-  <h2>Share Your REE Feedback</h2>
+  <h2>Your Comment?</h2>
   <form id="commentForm">
     <textarea id="comment" name="comment" rows="5" placeholder="Write your comment here..." required></textarea>
     <input type="text" id="name" name="name" placeholder="Your name (optional)" />
     <button type="submit">Submit Comment</button>
   </form>
 
-  <div id="thankYouMessage">💧 Thank you for your feedback! We appreciate your voice.</div>
+  <div id="thankYouMessage">💧 Thank you, Your comment has been submitted.</div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbwymWo8nPNFSM2lNoRH2kboRAG4MKLhK3zf7VGwKaAVY_wSc7IiWVA3CCKAmPDSgKfVlw/exec";
