@@ -3,45 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>💬 Comments from our Community</title>
+  <title>Share Your REE Experience</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0fdf5;
-      color: #2c7f57;
       max-width: 700px;
       margin: 2rem auto;
-      padding: 50px;
+      background: #f0fdf5;
+      color: #2c7f57;
+      padding: 1rem;
     }
     h2 {
       text-align: center;
       margin-bottom: 1.5rem;
-      color: #2c7f57;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(44,127,87,0.2);
+      margin-bottom: 30px;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0 15px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background-color: #2c7f57;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #226648;
+    }
+    #thankYouMessage {
+      display: none;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.2rem;
     }
     #commentsContainer {
       background: white;
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 0 10px rgba(44,127,87,0.2);
+      box-shadow: 0 0 12px rgba(44,127,87,0.2);
       min-height: 150px;
     }
     .comment {
-      padding: 11px;
       border-bottom: 1px solid #e0e0e0;
+      padding: 12px 0;
     }
     .comment:last-child {
       border-bottom: none;
-    }
-    .comment-timestamp {
-      font-size: 0.75rem;
-      color: #777;
     }
     .comment-name {
       font-weight: 600;
       margin-right: 8px;
     }
+    .comment-timestamp {
+      font-size: 0.75rem;
+      color: #777;
+    }
     .comment-text {
-      margin-top: 4px;
+      margin-top: 6px;
       white-space: pre-wrap;
       line-height: 1.4;
     }
@@ -54,11 +94,34 @@
   </style>
 </head>
 <body>
-  <h2>💬 Comments from our Community</h2>
+  <h2>💬 Share Your REE Experience</h2>
+
+  <form id="commentForm">
+    <textarea id="comment" name="comment" rows="4" placeholder="Write your comment here..." required></textarea>
+    <input type="text" id="name" name="name" placeholder="Your name (optional)" />
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="thankYouMessage">💧 Thank you! Your comment has been received.</div>
+
+  <h2>Real Feedback from Our Community</h2>
   <div id="commentsContainer">Loading comments...</div>
 
   <script>
-    // JSONP callback to display comments
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxOYywxvHRcpuz-4PGa_V78sBGz48l0UJlilyo4lQrBMP-uJXq2Cco1a_XEYHCFaIBUQw/exec";
+
+    // Sanitize to prevent XSS
+    function sanitizeHTML(str) {
+      return String(str).replace(/[&<>"']/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[tag]));
+    }
+
+    // Display comments in the container
     function displayComments(comments) {
       const container = document.getElementById('commentsContainer');
       container.innerHTML = '';
@@ -82,26 +145,55 @@
       });
     }
 
-    // Sanitize input to prevent XSS
-    function sanitizeHTML(str) {
-      return String(str).replace(/[&<>"']/g, tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      }[tag]));
-    }
-
-    // Load comments using JSONP technique
+    // Load comments with JSONP (for cross-domain)
     function loadComments() {
       const script = document.createElement('script');
-      script.src = 'https://script.google.com/macros/s/AKfycbwymWo8nPNFSM2lNoRH2kboRAG4MKLhK3zf7VGwKaAVY_wSc7IiWVA3CCKAmPDSgKfVlw/exec?callback=displayComments';
+      script.src = scriptURL + "?callback=displayComments";
       document.body.appendChild(script);
     }
 
-    // Load comments after page loads
-    window.onload = loadComments;
+    // Show thank you and hide form
+    function showThankYou() {
+      document.getElementById('commentForm').style.display = 'none';
+      document.getElementById('thankYouMessage').style.display = 'block';
+    }
+
+    // On form submit
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const comment = document.getElementById('comment').value.trim();
+      const name = document.getElementById('name').value.trim();
+
+      if (!comment) {
+        alert('Please write a comment before submitting.');
+        return;
+      }
+
+      fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
+      })
+      .then(res => res.text())
+      .then(() => {
+        showThankYou();
+        loadComments();
+      })
+      .catch(err => {
+        alert("⚠️ Failed to submit comment. Please try again.");
+        console.error(err);
+      });
+    });
+
+    // On page load
+    window.onload = function() {
+      // Prevent multiple submissions by storing a flag in localStorage
+      if (localStorage.getItem('commentSubmitted') === 'true') {
+        showThankYou();
+      }
+      loadComments();
+    };
   </script>
 </body>
 </html>
