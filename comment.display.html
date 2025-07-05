@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REE Feedback from Our Community</title>
+  <title>💬 What People Are Saying</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -54,60 +54,54 @@
   </style>
 </head>
 <body>
-  <h2>REE Feedback from Our Community</h2>
+  <h2>💬 What People Are Saying</h2>
   <div id="commentsContainer">Loading comments...</div>
 
-<script>
-  // Show status visually
-  const container = document.getElementById('commentsContainer');
-  container.innerHTML = '🔄 Fetching comments...';
+  <script>
+    // JSONP callback to display comments
+    function displayComments(comments) {
+      const container = document.getElementById('commentsContainer');
+      container.innerHTML = '';
 
-  // JSONP callback function
-  function displayComments(comments) {
-    container.innerHTML = ''; // Clear the loading message
+      if (!Array.isArray(comments) || comments.length === 0) {
+        container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
+        return;
+      }
 
-    if (!Array.isArray(comments) || comments.length === 0) {
-      container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
-      return;
+      comments.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment';
+        div.innerHTML = `
+          <div>
+            <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
+            <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
+          </div>
+          <div class="comment-text">${sanitizeHTML(c.comment)}</div>
+        `;
+        container.appendChild(div);
+      });
     }
 
-    comments.forEach(c => {
-      const div = document.createElement('div');
-      div.className = 'comment';
-      div.innerHTML = `
-        <div>
-          <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
-          <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
-        </div>
-        <div class="comment-text">${sanitizeHTML(c.comment)}</div>
-      `;
-      container.appendChild(div);
-    });
-  }
+    // Sanitize input to prevent XSS
+    function sanitizeHTML(str) {
+      return String(str).replace(/[&<>"']/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[tag]));
+    }
 
-  // Sanitize to prevent HTML injection
-  function sanitizeHTML(str) {
-    return String(str).replace(/[&<>"']/g, tag => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[tag]));
-  }
+    // Load comments using JSONP technique
+    function loadComments() {
+      const script = document.createElement('script');
+      script.src = 'https://script.google.com/macros/s/AKfycbxOYywxvHRcpuz-4PGa_V78sBGz48l0UJlilyo4lQrBMP-uJXq2Cco1a_XEYHCFaIBUQw/exec?callback=displayComments';
+      document.body.appendChild(script);
+    }
 
-  // Inject script tag for JSONP
-  function loadComments() {
-    const script = document.createElement('script');
-    script.src = 'https://script.google.com/macros/s/AKfycbxOYywxvHRcpuz-4PGa_V78sBGz48l0UJlilyo4lQrBMP-uJXq2Cco1a_XEYHCFaIBUQw/exec?callback=displayComments';
-    script.onerror = function() {
-      container.innerHTML = '❌ Failed to fetch comments (script not loading)';
-    };
-    document.body.appendChild(script);
-  }
-
-  loadComments();
-</script>
-
+    // Load comments after page loads
+    window.onload = loadComments;
+  </script>
 </body>
 </html>
