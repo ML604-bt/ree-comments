@@ -106,6 +106,45 @@
       document.getElementById('comment').value = '';
       document.getElementById('name').value = '';
     });
-  </script>
+  <script>
+  document.getElementById('commentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const comment = document.getElementById('comment').value.trim();
+    const name = document.getElementById('name').value.trim();
+
+    if (!comment) return;
+
+    // 💡 Replace this with YOUR real Apps Script Web App URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwENxxxxxxxxyourrealurlxxxxx/exec";
+
+    // Submit data to Google Apps Script
+    fetch(scriptURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
+    })
+    .then(response => response.text())
+    .then(result => {
+      // Hide the form + heading
+      document.getElementById('formWrapper').style.display = 'none';
+
+      // Show thank you message
+      const msg = document.getElementById('thankYouMessage');
+      msg.style.display = 'block';
+
+      // Optional: reset inputs
+      document.getElementById('comment').value = '';
+      document.getElementById('name').value = '';
+    })
+    .catch(error => {
+      alert("⚠️ Error submitting your comment. Please try again.");
+      console.error("Submission error:", error);
+    });
+  });
+</script>
+
 </body>
 </html>
