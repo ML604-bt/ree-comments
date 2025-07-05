@@ -22,10 +22,10 @@
       max-width: 500px;
       width: 90%;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
     }
 
     h2 {
-      text-align: center;
       color: #2c7f57;
       margin-bottom: 20px;
     }
@@ -58,7 +58,6 @@
 
     #thankYouMessage {
       display: none;
-      text-align: center;
       font-size: 18px;
       color: #2c7f57;
       margin-top: 20px;
@@ -75,13 +74,14 @@
 </head>
 <body>
   <div class="container">
-    <h2>💬 Share Your Comment</h2>
-
-    <form id="commentForm">
-      <textarea id="comment" name="comment" placeholder="Write your comment here..." required></textarea>
-      <input type="text" id="name" name="name" placeholder="Your name (optional)">
-      <button type="submit">Submit</button>
-    </form>
+    <div id="formWrapper">
+      <h2>💬 Share Your Comment</h2>
+      <form id="commentForm">
+        <textarea id="comment" name="comment" placeholder="Write your comment here..." required></textarea>
+        <input type="text" id="name" name="name" placeholder="Your name (optional)">
+        <button type="submit">Submit</button>
+      </form>
+    </div>
 
     <div id="thankYouMessage">✅ Thank you, your comment has been submitted.</div>
   </div>
@@ -95,18 +95,14 @@
 
       if (!comment) return;
 
-      // Fake save here — you’ll connect it to Google Script in step 3
-      console.log("Comment Submitted:", comment);
-      console.log("Name:", name || "Anonymous");
-
-      // Hide form
-      document.getElementById('commentForm').style.display = 'none';
+      // Hide the full form wrapper including the heading
+      document.getElementById('formWrapper').style.display = 'none';
 
       // Show thank you message
       const msg = document.getElementById('thankYouMessage');
       msg.style.display = 'block';
 
-      // Reset form values
+      // Reset form values (optional for future)
       document.getElementById('comment').value = '';
       document.getElementById('name').value = '';
     });
