@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Submit Your REE Feedback</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0fdf5;
+      color: #2c7f57;
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 1rem;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(44,127,87,0.2);
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      font-family: inherit;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #2c7f57;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #226648;
+    }
+    #thankYouMessage {
+      display: none;
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1.25rem;
+      color: #2c7f57;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Share Your REE Feedback</h2>
+  <form id="commentForm">
+    <textarea id="comment" name="comment" rows="5" placeholder="Write your comment here..." required></textarea>
+    <input type="text" id="name" name="name" placeholder="Your name (optional)" />
+    <button type="submit">Submit Comment</button>
+  </form>
+
+  <div id="thankYouMessage">💧 Thank you for your feedback! We appreciate your voice.</div>
+
+  <script>
+    const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const comment = document.getElementById('comment').value.trim();
+      const name = document.getElementById('name').value.trim();
+
+      if (!comment) {
+        alert('Please write a comment before submitting.');
+        return;
+      }
+
+      fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
+      })
+      .then(response => response.text())
+      .then(() => {
+        // Hide form and show thank you
+        document.getElementById('commentForm').style.display = 'none';
+        document.getElementById('thankYouMessage').style.display = 'block';
+
+        // Optionally, you can prevent resubmission by disabling the button or localStorage
+      })
+      .catch(err => {
+        alert("⚠️ Submission failed. Please try again later.");
+        console.error(err);
+      });
+    });
+  </script>
+
+</body>
+</html>
