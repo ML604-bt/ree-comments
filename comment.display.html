@@ -99,7 +99,7 @@
   // Inject script tag for JSONP
   function loadComments() {
     const script = document.createElement('script');
-    script.src = 'https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec?callback=displayComments';
+    script.src = 'https://script.google.com/macros/s/AKfycbxOYywxvHRcpuz-4PGa_V78sBGz48l0UJlilyo4lQrBMP-uJXq2Cco1a_XEYHCFaIBUQw/exec?callback=displayComments';
     script.onerror = function() {
       container.innerHTML = '❌ Failed to fetch comments (script not loading)';
     };
