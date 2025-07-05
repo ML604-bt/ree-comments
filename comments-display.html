@@ -3,96 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>REE Comments Display</title>
+  <title>💬 What People Are Saying</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f0fdf5;
-      padding: 20px;
+      color: #2c7f57;
       max-width: 700px;
-      margin: auto;
+      margin: 2rem auto;
+      padding: 1rem;
     }
     h2 {
-      color: #2c7f57;
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 1.5rem;
     }
-    .comment {
+    #commentsContainer {
       background: white;
       border-radius: 12px;
-      padding: 15px 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      margin-bottom: 15px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(44,127,87,0.2);
+      min-height: 150px;
     }
-    .comment .name {
+    .comment {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .comment:last-child {
+      border-bottom: none;
+    }
+    .comment-timestamp {
+      font-size: 0.75rem;
+      color: #777;
+    }
+    .comment-name {
       font-weight: 600;
-      color: #226648;
+      margin-right: 8px;
     }
-    .comment .timestamp {
-      font-size: 0.85rem;
-      color: #888;
-      margin-bottom: 8px;
-    }
-    .comment .text {
-      font-size: 1rem;
-      line-height: 1.4;
-      white-space: pre-wrap;
-    }
-    #loading {
+    .no-comments {
       text-align: center;
-      color: #2c7f57;
-      font-weight: 600;
-      margin-top: 40px;
+      color: #999;
+      font-style: italic;
+      padding: 40px 0;
     }
   </style>
 </head>
 <body>
-
   <h2>💬 What People Are Saying</h2>
-  <div id="commentsContainer">
-    <div id="loading">Loading comments...</div>
-  </div>
+  <div id="commentsContainer">Loading comments...</div>
 
   <script>
-    // Your Google Apps Script Web App URL with doGet function returning comments JSON
-    const COMMENTS_API = 'https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec';
+    const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
 
-    async function fetchComments() {
-      try {
-        const res = await fetch(COMMENTS_API);
-        if (!res.ok) throw new Error('Failed to fetch comments');
-        const comments = await res.json();
-
+    fetch(scriptURL)
+      .then(response => response.text()) // get raw text
+      .then(text => JSON.parse(text))     // parse JSON
+      .then(comments => {
         const container = document.getElementById('commentsContainer');
-        container.innerHTML = ''; // Clear loading text
+        container.innerHTML = ''; // clear loading text
 
-        if (comments.length === 0) {
-          container.innerHTML = '<p>No comments yet. Be the first to share!</p>';
+        if (!comments.length) {
+          container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
           return;
         }
 
-        comments.reverse().forEach(comment => {
+        comments.forEach(c => {
           const div = document.createElement('div');
-          div.classList.add('comment');
+          div.className = 'comment';
 
-          const timestamp = new Date(comment.timestamp).toLocaleString();
+          const timestamp = new Date(c.timestamp).toLocaleString();
           div.innerHTML = `
-            <div class="timestamp">${timestamp}</div>
-            <div class="name">${comment.name || 'Anonymous'}</div>
-            <div class="text">${comment.comment}</div>
+            <div>
+              <span class="comment-name">${c.name || 'Anonymous'}</span>
+              <span class="comment-timestamp">${timestamp}</span>
+            </div>
+            <div class="comment-text">${c.comment}</div>
           `;
-
           container.appendChild(div);
         });
-
-      } catch (error) {
-        document.getElementById('commentsContainer').innerHTML = '<p>Sorry, failed to load comments.</p>';
-        console.error('Error loading comments:', error);
-      }
-    }
-
-    fetchComments();
+      })
+      .catch(error => {
+        console.error('Failed to load comments:', error);
+        document.getElementById('commentsContainer').textContent = 'Failed to load comments.';
+      });
   </script>
-
 </body>
 </html>
