@@ -16,6 +16,7 @@
     h2 {
       text-align: center;
       margin-bottom: 1.5rem;
+      color: #2c7f57;
     }
     #commentsContainer {
       background: white;
@@ -39,6 +40,11 @@
       font-weight: 600;
       margin-right: 8px;
     }
+    .comment-text {
+      margin-top: 4px;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
     .no-comments {
       text-align: center;
       color: #999;
@@ -48,20 +54,26 @@
   </style>
 </head>
 <body>
-  <h2>💬 What People Are Saying?</h2>
+  <h2>💬 What People Are Saying</h2>
   <div id="commentsContainer">Loading comments...</div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
 
     fetch(scriptURL)
-      .then(response => response.text()) // get raw text
-      .then(text => JSON.parse(text))     // parse JSON
-      .then(comments => {
-        const container = document.getElementById('commentsContainer');
-        container.innerHTML = ''; // clear loading text
+      .then(res => res.text())
+      .then(text => {
+        let comments;
+        try {
+          comments = JSON.parse(text);
+        } catch (e) {
+          throw new Error("Invalid JSON response");
+        }
 
-        if (!comments.length) {
+        const container = document.getElementById('commentsContainer');
+        container.innerHTML = '';
+
+        if (!Array.isArray(comments) || comments.length === 0) {
           container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
           return;
         }
@@ -69,14 +81,13 @@
         comments.forEach(c => {
           const div = document.createElement('div');
           div.className = 'comment';
-
           const timestamp = new Date(c.timestamp).toLocaleString();
           div.innerHTML = `
             <div>
-              <span class="comment-name">${c.name || 'Anonymous'}</span>
+              <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
               <span class="comment-timestamp">${timestamp}</span>
             </div>
-            <div class="comment-text">${c.comment}</div>
+            <div class="comment-text">${sanitizeHTML(c.comment)}</div>
           `;
           container.appendChild(div);
         });
@@ -85,6 +96,13 @@
         console.error('Failed to load comments:', error);
         document.getElementById('commentsContainer').textContent = 'Failed to load comments.';
       });
+
+    // Prevent HTML injection
+    function sanitizeHTML(str) {
+      return str.replace(/[&<>"']/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[tag]));
+    }
   </script>
 </body>
 </html>
