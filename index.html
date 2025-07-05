@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>REE Feedback Portal</title>
   <style>
     body {
@@ -10,16 +10,9 @@
       background: #f0fdf5;
       color: #2c7f57;
       margin: 0 auto;
-      padding: 0 10px; /* Reduce side space */
-      max-width: 100%;
+      padding: 0 10px;
+      max-width: 700px;
     }
-    @media (min-width: 768px) {
-      body {
-        max-width: 700px;
-        padding: 0 20px;
-      }
-    }
-
     .section {
       background: white;
       border-radius: 12px;
@@ -27,12 +20,12 @@
       margin-bottom: 30px;
       box-shadow: 0 0 12px rgba(0,0,0,0.08);
     }
-
     h2 {
       font-weight: 600;
       font-size: 1.3rem;
+      margin-bottom: 20px;
+      text-align: center;
     }
-
     textarea, input {
       width: 100%;
       padding: 11px;
@@ -41,7 +34,6 @@
       border: 1px solid #ccc;
       border-radius: 8px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -51,53 +43,37 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #226648;
     }
-
     #thankYouMessage {
       display: none;
       text-align: center;
       font-size: 18px;
       color: #2c7f57;
       margin-top: 20px;
-      animation: fadeOut 1s ease-in-out 4s forwards;
     }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-      }
-    }
-
     .comment {
       padding: 12px;
       border-bottom: 1px solid #e0e0e0;
-      margin-bottom: 12px;
     }
-
     .comment:last-child {
       border-bottom: none;
     }
-
     .comment-name {
       font-weight: bold;
       margin-right: 8px;
     }
-
     .comment-timestamp {
       font-size: 0.8rem;
       color: #777;
     }
-
     .comment-text {
       margin-top: 5px;
       white-space: pre-wrap;
     }
-
     .no-comments {
       text-align: center;
       color: #999;
@@ -108,118 +84,117 @@
 </head>
 <body>
 
-  <!-- ✅ Comment Form Section -->
+  <!-- Comment Form Section -->
   <div class="section" id="formSection">
     <h2>💬 Share Your REE Comment</h2>
     <form id="commentForm">
       <textarea id="comment" name="comment" placeholder="Write your comment here..." required></textarea>
-      <input type="text" id="name" name="name" placeholder="Your name (optional)">
+      <input type="text" id="name" name="name" placeholder="Your name (optional)" />
       <button type="submit">Submit</button>
     </form>
   </div>
 
-  <!-- ✅ Thank You Message OUTSIDE formSection -->
+  <!-- Thank You Message -->
   <div id="thankYouMessage">✅ Thank you, your comment has been submitted.</div>
 
-  <!-- ✅ Comment Display Section -->
+  <!-- Comments Display Section -->
   <div class="section">
     <h2>💬 What People Are Saying</h2>
     <div id="commentsContainer">Loading comments...</div>
   </div>
 
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
+<script>
+  const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
 
-    // Sanitize HTML to prevent XSS
-    function sanitizeHTML(str) {
-      if (!str) return '';
-      return str.replace(/[&<>"']/g, function(tag) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        })[tag] || tag;
-      });
+  // On page load, check if user already submitted comment (using localStorage)
+  document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('commentSubmitted') === 'true') {
+      // Hide form, show thank you
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('thankYouMessage').style.display = 'block';
+    }
+    loadComments();
+  });
+
+  // Handle form submission
+  document.getElementById('commentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const comment = document.getElementById('comment').value.trim();
+    const name = document.getElementById('name').value.trim();
+
+    if (!comment) {
+      alert('Please write a comment before submitting.');
+      return;
     }
 
-    // Handle comment form submission
-    document.getElementById('commentForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    fetch(scriptURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
+    })
+    .then(res => res.text())
+    .then(() => {
+      // Hide form, show thank you message
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('thankYouMessage').style.display = 'block';
 
-      const comment = document.getElementById('comment').value.trim();
-      const name = document.getElementById('name').value.trim();
+      // Store submission flag in localStorage to block resubmission
+      localStorage.setItem('commentSubmitted', 'true');
 
-      if (!comment) return;
+      loadComments();
+    })
+    .catch(err => {
+      alert("⚠️ Failed to submit comment. Please try again.");
+      console.error(err);
+    });
+  });
 
-      fetch(scriptURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: `comment=${encodeURIComponent(comment)}&name=${encodeURIComponent(name)}`
-      })
+  // Load comments and display
+  function loadComments() {
+    fetch(scriptURL)
       .then(res => res.text())
-      .then(() => {
-        // Hide form, show thank you message
-        document.getElementById('formSection').style.display = 'none';
-        const thankYouMsg = document.getElementById('thankYouMessage');
-        thankYouMsg.style.display = 'block';
+      .then(text => JSON.parse(text))
+      .then(data => {
+        const container = document.getElementById('commentsContainer');
+        container.innerHTML = '';
 
-        loadComments(); // refresh comments after submit
+        if (!data.length) {
+          container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
+          return;
+        }
 
-        // Optional: Reset form fields after submission (in case user comes back)
-        document.getElementById('commentForm').reset();
-
-        // Optional: Hide thank you message & show form again after 6 seconds
-        setTimeout(() => {
-          thankYouMsg.style.display = 'none';
-          document.getElementById('formSection').style.display = 'block';
-        }, 6000);
+        data.forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'comment';
+          div.innerHTML = `
+            <div>
+              <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
+              <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
+            </div>
+            <div class="comment-text">${sanitizeHTML(c.comment)}</div>
+          `;
+          container.appendChild(div);
+        });
       })
       .catch(err => {
-        alert("⚠️ Failed to submit comment. Please try again.");
+        const container = document.getElementById('commentsContainer');
+        container.textContent = '❌ Failed to load comments.';
         console.error(err);
       });
-    });
+  }
 
-    // Load comments into display section
-    function loadComments() {
-      fetch(scriptURL)
-        .then(res => res.text())
-        .then(text => JSON.parse(text))
-        .then(data => {
-          const container = document.getElementById('commentsContainer');
-          container.innerHTML = '';
-
-          if (!data.length) {
-            container.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
-            return;
-          }
-
-          data.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'comment';
-            div.innerHTML = `
-              <div>
-                <span class="comment-name">${sanitizeHTML(c.name || 'Anonymous')}</span>
-                <span class="comment-timestamp">${new Date(c.timestamp).toLocaleString()}</span>
-              </div>
-              <div class="comment-text">${sanitizeHTML(c.comment)}</div>
-            `;
-            container.appendChild(div);
-          });
-        })
-        .catch(err => {
-          document.getElementById('commentsContainer').textContent = '❌ Failed to load comments.';
-          console.error(err);
-        });
-    }
-
-    // Initial comment load on page open
-    loadComments();
-  </script>
+  // Basic HTML sanitizer to avoid injection
+  function sanitizeHTML(str) {
+    return str.replace(/[&<>"']/g, tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[tag]));
+  }
+</script>
 
 </body>
 </html>
