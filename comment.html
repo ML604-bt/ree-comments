@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Live Comment Box</title>
+  <title>REE Live Comment Box</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -58,133 +58,72 @@
     button:hover {
       background: #084f9e;
     }
-    #comments {
-      max-width: 600px;
-      margin: 0 auto;
-      background: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      min-height: 150px;
-    }
-    .comment {
-      border-bottom: 1px solid #ddd;
-      padding: 10px 0;
-    }
-    .comment:last-child {
-      border-bottom: none;
-    }
-    .comment .author {
-      font-weight: 700;
-      color: #0a74da;
-    }
-    .comment .date {
-      font-size: 0.8rem;
-      color: #666;
-      margin-left: 8px;
-    }
-    .comment .content {
-      margin-top: 5px;
-      white-space: pre-wrap;
-    }
-    @media (max-width: 600px) {
-      body, form, #comments {
-        margin: 10px;
-        padding: 15px;
-      }
+    .message {
+      text-align: center;
+      font-size: 1rem;
+      color: green;
+      margin-bottom: 10px;
+      display: none;
     }
   </style>
 </head>
 <body>
   <h2>💬 Share Your Thoughts</h2>
+  <div class="message" id="thankYouMessage">✅ Thank you! Your comment has been submitted.</div>
+
   <form id="commentForm" novalidate>
-    <label for="name">Name <span style="color:red">*</span></label>
-    <input type="text" id="name" name="name" required placeholder="Your name" />
-    
-    <label for="email">Email <span style="color:red">*</span></label>
-    <input type="email" id="email" name="email" required placeholder="Your email" />
-    
+    <label for="name">Name (optional)</label>
+    <input type="text" id="name" name="name" placeholder="Your name" />
+
+    <label for="email">Email (optional)</label>
+    <input type="email" id="email" name="email" placeholder="Your email (won’t be shown)" />
+
     <label for="comment">Comment <span style="color:red">*</span></label>
     <textarea id="comment" name="comment" required placeholder="Write your comment here..."></textarea>
-    
+
     <button type="submit">Submit Comment</button>
   </form>
 
-  <section id="comments" aria-live="polite" aria-relevant="additions">
-    <!-- Comments will appear here -->
-  </section>
-
   <script>
     const form = document.getElementById('commentForm');
-    const commentsSection = document.getElementById('comments');
-
-    // Load comments from localStorage on page load
-    let comments = JSON.parse(localStorage.getItem('liveComments') || '[]');
-
-    function displayComments() {
-      commentsSection.innerHTML = '';
-      if (comments.length === 0) {
-        commentsSection.innerHTML = '<p>No comments yet. Be the first to share your thoughts!</p>';
-        return;
-      }
-      comments.forEach(({name, email, content, date}) => {
-        const commentEl = document.createElement('article');
-        commentEl.classList.add('comment');
-        commentEl.innerHTML = `
-          <div>
-            <span class="author">${sanitizeHTML(name)}</span>
-            <span class="date"> - ${new Date(date).toLocaleString()}</span>
-          </div>
-          <div class="content">${sanitizeHTML(content)}</div>
-        `;
-        commentsSection.appendChild(commentEl);
-      });
-    }
-
-    // Basic sanitization to prevent injection
-    function sanitizeHTML(str) {
-      return str.replace(/[&<>"']/g, function(m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        }[m];
-      });
-    }
+    const thankYouMessage = document.getElementById('thankYouMessage');
 
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const name = form.name.value.trim();
+
+      const name = form.name.value.trim() || "Anonymous";
       const email = form.email.value.trim();
       const comment = form.comment.value.trim();
 
-      if (!name || !email || !comment) {
-        alert('Please fill out all required fields.');
+      if (!comment) {
+        alert("Please enter a comment.");
         return;
       }
 
-      // Add new comment
-      comments.unshift({
-        name,
-        email,
-        content: comment,
-        date: new Date().toISOString()
+      const scriptURL = "https://script.google.com/macros/s/AKfycby17IinxlYtui9uncMSj9_maMsu6w1KE3CQJXHmUlHajlGN88Rg4CuTwU5VkeCT0n-YMQ/exec";
+
+      const data = new URLSearchParams();
+      data.append("name", name);
+      data.append("email", email);
+      data.append("comment", comment);
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: data,
+      })
+      .then(response => response.text())
+      .then(responseText => {
+        form.reset();
+        thankYouMessage.style.display = "block";
+        setTimeout(() => {
+          thankYouMessage.style.display = "none";
+        }, 4000);
+      })
+      .catch(error => {
+        alert("❌ Something went wrong. Please try again later.");
+        console.error("Error submitting comment:", error);
       });
-
-      // Save to localStorage
-      localStorage.setItem('liveComments', JSON.stringify(comments));
-
-      // Reset form
-      form.reset();
-
-      // Refresh display
-      displayComments();
     });
-
-    // Initial load
-    displayComments();
   </script>
 </body>
 </html>
