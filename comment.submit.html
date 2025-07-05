@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Submit Your Comments</title>
+  <title>Submit Your REE Comments</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f0fdf5;
       color: #2c7f57;
-      max-width: 100%;
-      margin: 50px auto;
-      padding: 30px;
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 1rem;
     }
     h2 {
       text-align: center;
@@ -20,14 +20,14 @@
     }
     form {
       background: white;
-      padding: 11px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(44,127,87,0.2);
     }
     textarea, input[type="text"] {
-      width: 90%;
-      padding: 11px;
-      margin-bottom: 30px;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 1rem;
       font-size: 1rem;
       border-radius: 8px;
       border: 1px solid #ccc;
@@ -61,9 +61,9 @@
 </head>
 <body>
 
-  <h2>Share Your Comments</h2>
+  <h2>Share Your REE comments</h2>
   <form id="commentForm">
-    <textarea id="comment" name="comment" rows="2" placeholder="Write your comment here..." required></textarea>
+    <textarea id="comment" name="comment" rows="5" placeholder="Write your comment here..." required></textarea>
     <input type="text" id="name" name="name" placeholder="Your name (optional)" />
     <button type="submit">Submit Comment</button>
   </form>
